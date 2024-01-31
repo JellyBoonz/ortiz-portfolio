@@ -2,24 +2,125 @@
 <html>
 
 <head>
-    <title>
-        Jaiden Ortiz - CIS367 Project Webpage</title>
+    <title>Jaiden Ortiz - CIS367 Project Webpage</title>
 </head>
 
 <body>
-    <h1>
-        Jaiden Ortiz - CIS367 Project Webpage</h1>
+    <h1>Jaiden Ortiz - CIS367 Project Webpage</h1>
     <hr size="1" />
+
     <ul>
         <li>
-            <a href="./triangle.html">
-                Triangle</a>
+            <a href="./triangle.html">Triangle</a>
         </li>
         <li>
-            <a href="./gasket.html">
-                Gasket</a>
+            <a href="./gasket.html">Gasket</a>
         </li>
     </ul>
+
+    <canvas id="glcanvas" width="640" height="480"></canvas>
+
+    <script>
+
+        // Get canvas and WebGL context
+        var canvas = document.getElementById('glcanvas');
+        var gl = canvas.getContext('webgl');
+
+        // Define vertex shader
+        var vertCode = `
+      attribute vec2 position;
+
+      uniform mat4 u_matrix;
+
+      void main() {
+        gl_Position = u_matrix * vec4(position, 0.0, 1.0);
+      }
+    `;
+
+        // Define fragment shader
+        var fragCode = `
+        precision mediump float;
+
+        uniform vec4 u_color1;
+        uniform vec4 u_color2;
+
+        void main() {
+            float distance = length(gl_PointCoord - vec2(0.5, 0.5));
+            vec4 color = mix(u_color1, u_color2, distance);
+
+            // Calculate gradient based on y-coordinate
+            float gradient = gl_FragCoord.y / 480.0; // Assuming canvas height is 480 pixels
+            color = mix(u_color1, u_color2, gradient);
+
+            gl_FragColor = color;
+        }
+    `;
+
+        // Create shaders
+        var vertShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vertShader, vertCode);
+        gl.compileShader(vertShader);
+
+        var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragShader, fragCode);
+        gl.compileShader(fragShader);
+
+        // Link shaders into a program
+        var program = gl.createProgram();
+        gl.attachShader(program, vertShader);
+        gl.attachShader(program, fragShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        // Set position attribute
+        var posData = new Float32Array([
+            0.0, 0.5,
+            0.5, -0.5,
+            -0.5, -0.5
+        ]);
+
+        var buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STATIC_DRAW);
+
+        var position = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+        // Set uniform matrix
+        var matrix = gl.getUniformLocation(program, 'u_matrix');
+
+        // Set uniform color
+        // Set uniform colors
+        var color1Loc = gl.getUniformLocation(program, 'u_color1');
+        var color2Loc = gl.getUniformLocation(program, 'u_color2');
+
+        gl.uniform4f(color1Loc, 1.0, 0.0, 0.0, 1.0);
+        gl.uniform4f(color2Loc, 0.0, 0.0, 1.0, 1.0);
+        // Draw
+        function draw(time) {
+            time *= 0.001; // seconds
+
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            var mat = new Float32Array([
+                Math.cos(time), Math.sin(time), 0.0, 0.0,
+                -Math.sin(time), Math.cos(time), 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 1.0
+            ]);
+
+            gl.uniformMatrix4fv(matrix, false, mat);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+            requestAnimationFrame(draw);
+        }
+
+        draw(0);
+
+    </script>
+
 </body>
 
 </html>
