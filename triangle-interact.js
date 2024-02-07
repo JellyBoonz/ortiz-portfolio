@@ -12,26 +12,32 @@ let x = 0.0;
 let y = 0.0;
 let xLoc, yLoc;
 let dirs = [null, null]; // horizontal, vertical
+let rotationAngle = 0;
+let rotating = false;
+let rotationLoc;
 
 // This function executes our WebGL code AFTER the window is loaded.
 // Meaning, that we wait for our canvas element to exist.
 window.onload = function init() {
-    window.addEventListener("keydown",
-        function (e) {
-            if (e.key == 'ArrowLeft') {
-                dirs[0] = false;
-            } else if (e.key == 'ArrowRight') {
-                dirs[0] = true;
-            } else if (e.key == 'ArrowUp') {
-                dirs[1] = true;
-            } else if (e.key == 'ArrowDown') {
-                dirs[1] = false;
-            } else if (e.key == ' ') {
-                dirs[0] = null;
-                dirs[1] = null;
-            }
-        },
-        false);
+    window.addEventListener("keydown", function (e) {
+        if (e.key == 'ArrowLeft') {
+            dirs[0] = false;
+        } else if (e.key == 'ArrowRight') {
+            dirs[0] = true;
+        } else if (e.key == 'ArrowUp') {
+            dirs[1] = true;
+        } else if (e.key == 'ArrowDown') {
+            dirs[1] = false;
+        } else if (e.key == ' ') {
+            dirs[0] = null;
+            dirs[1] = null;
+        } else if (e.key == 'r') {
+            rotateTriangle();
+        } else if (e.key == 't') {
+            stopRotation();
+        }
+    }, false);
+
     // Grab the canvas object and initialize it
     var canvas = document.getElementById('gl-canvas');
     gl = WebGLUtils.setupWebGL(canvas);
@@ -55,7 +61,7 @@ window.onload = function init() {
     gl.useProgram(program);
     xLoc = gl.getUniformLocation(program, "x");
     yLoc = gl.getUniformLocation(program, "y");
-
+    rotationLoc = gl.getUniformLocation(program, "rotation");
 
     // load data into GPU
     var bufferID = gl.createBuffer();
@@ -84,5 +90,19 @@ function render() {
 
     gl.uniform1f(xLoc, x);
     gl.uniform1f(yLoc, y);
+
+    if (rotating) {
+        rotationAngle += 1; // Change this value to adjust rotation speed
+        gl.uniform1f(rotationLoc, rotationAngle);
+    }
+
     window.requestAnimationFrame(render);
+}
+
+function rotateTriangle() {
+    rotating = true;
+}
+
+function stopRotation() {
+    rotating = false;
 }
