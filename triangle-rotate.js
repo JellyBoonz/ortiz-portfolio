@@ -58,18 +58,21 @@ window.onload = function init() {
 
 // Render whatever is in our gl variable
 function render() {
-  gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  setTimeout(function () {
 
-  gl.uniform1f(xLoc, x);
-  gl.uniform1f(yLoc, y);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-  if (rotating) {
-    rotationAngle += 1; // Change this value to adjust rotation speed
-    gl.uniform1f(rotationLoc, rotationAngle);
-  }
+    gl.uniform1f(xLoc, x);
+    gl.uniform1f(yLoc, y);
 
-  window.requestAnimationFrame(render);
+    if (rotating) {
+      rotationAngle += 1;
+      gl.uniform1f(rotationLoc, rotationAngle);
+    }
+
+    window.requestAnimationFrame(render);
+  }, 100)
 }
 
 function rotateTriangle() {
