@@ -9,9 +9,9 @@ Boilerplate code showing the triangle in-class assignment.
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <!-- Define our shaders -->
-    <script id="vertex-shader" type="x-shader/x-vertex">
+  <meta charset="utf-8">
+  <!-- Define our shaders -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
   attribute vec4 vPosition;
   uniform float x;
   uniform float y;
@@ -24,7 +24,7 @@ Boilerplate code showing the triangle in-class assignment.
 
   }
   </script>
-    <script id="fragment-shader" type="x-shader/x-fragment">
+  <script id="fragment-shader" type="x-shader/x-fragment">
   precision mediump float;
 
   void main() {
@@ -33,17 +33,17 @@ Boilerplate code showing the triangle in-class assignment.
   </script>
 
 
-    <script src="./libraries/Common/webgl-utils.js"></script>
-    <script src="./libraries/Common/initShaders.js"></script>
-    <script src="./libraries/Common/MV.js"></script>
+  <script src="../libraries/Common/webgl-utils.js"></script>
+  <script src="../libraries/Common/initShaders.js"></script>
+  <script src="../libraries/Common/MV.js"></script>
 
-    <script src="triangle-anim.js"></script>
+  <script src="triangle-anim.js"></script>
 </head>
 
 <body>
-    <canvas id="gl-canvas" width="640" height="480">
-        Your browser doesn't support HTML5!
-    </canvas>
+  <canvas id="gl-canvas" width="640" height="480">
+    Your browser doesn't support HTML5!
+  </canvas>
 </body>
 
 </html>

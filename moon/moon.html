@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+triangle.html
+Erik Fredericks, c/o Ed Angel
+
+Decription:
+Boilerplate code showing the triangle in-class assignment.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- Define our shaders -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+  attribute vec4 vPosition;
+
+  void main() {
+    gl_Position = vPosition;
+  }
+  </script>
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform vec2 iResolution;
+    
+    vec3 sdfCircle(vec2 uv, float r) {
+      float x = uv.x;
+      float y = uv.y;
+    
+      float d = length(vec2(x, y)) - r;
+      // Calculate the distance from the center of the larger circle
+      float d_outer = length(uv);
+        
+      // Calculate the distance from the center of the smaller circle
+      float d_inner = length(uv + vec2(0.1, 0.0)); // Shifted by 0.2 in the x-axis
+    
+      if (d > 0.0){ 
+          return vec3(0.05,0.05,0.15);
+      }
+      
+      else {   
+        // Check if the point is between the two circles (crescent shape)
+        if (d_outer < r && d_inner < r) {
+            return vec3(0.5,0.5,0.6); // Color outside the crescent shape
+        } else {
+            return vec3(0.9, 0.95, 0.8); // Color inside the crescent shape
+        }
+      }
+    }
+    
+    void main() {
+      vec2 uv = gl_FragCoord.xy / iResolution.xy; // <0,1>
+      uv -= 0.5;
+      uv.x *= iResolution.x / iResolution.y; // fix aspect ratio
+    
+      vec3 col = sdfCircle(uv, 0.2);
+    
+      // Output to screen
+      gl_FragColor = vec4(col,1.0);
+    }
+  </script>
+
+
+  <script src="../libraries/Common/webgl-utils.js"></script>
+  <script src="../libraries/Common/initShaders.js"></script>
+  <script src="../libraries/Common/MV.js"></script>
+
+  <script src="moon.js"></script>
+</head>
+
+<body>
+  <canvas id="gl-canvas" width="640" height="480">
+    Your browser doesn't support HTML5!
+  </canvas>
+</body>
+
+</html>
